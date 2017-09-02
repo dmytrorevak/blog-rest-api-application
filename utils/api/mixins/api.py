@@ -32,6 +32,7 @@ class APIMixin(object):
         try:
             result = super(APIMixin, self).dispatch(request, parameters=self.get_parameters(request), *args, **kwargs)
 
+
         except APIError as e:
             return self.render_to_response({
                 'success': False,
@@ -56,4 +57,5 @@ class APIMixin(object):
         })
 
     def render_to_response(self, result, response_class=HttpResponse):
-        return response_class(json.dumps(result), content_type='application/json')
+        return response_class(json.dumps(list(result['result'])),
+                              content_type='application/json')

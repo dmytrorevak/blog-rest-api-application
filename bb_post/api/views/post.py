@@ -2,25 +2,21 @@ from django.views.generic import View
 
 from bb_post.api.forms.post import CreateForm
 from bb_post.api.mixins import PostAPIMixin
+from bb_post.api.serializers.post import serialize as serialize_post
 from bb_post.models import Post
 from utils.api.exceptions import RequestValidationFailedAPIError
 from utils.api.mixins import APIMixin
 
 import bb_post.services.post
 
-from bb_post.api.serializers.post import PostSerializer
-from rest_framework import mixins
-from rest_framework import generics
 
+class Collection(APIMixin, View):
 
-class Collection(mixins.ListModelMixin,
-                 generics.GenericAPIView):
+    def get(self, request, parameters, *args, **kwargs):
 
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+        posts = Post.objects.all()
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        return map(serialize_post, posts)
 
     def post(self, request, parameters, *args, **kwargs):
 
