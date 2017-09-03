@@ -16,14 +16,14 @@ class APIMixin(object):
 
         try:
             if request.method in ('POST', 'PUT'):
-                parameters = json.loads(request.body)
+                body_unicode = request.body.decode('utf-8')
+                parameters = json.loads(body_unicode)
 
             if request.method == 'GET':
                 parameters = request.GET
 
         except ValueError as e:
             raise RequestDecodeFailedAPIError(e)
-
         return parameters
 
     @csrf_exempt
@@ -57,5 +57,5 @@ class APIMixin(object):
         })
 
     def render_to_response(self, result, response_class=HttpResponse):
-        return response_class(json.dumps(list(result['result'])),
+        return response_class(json.dumps(result['result']),
                               content_type='application/json')

@@ -16,12 +16,11 @@ class Collection(APIMixin, View):
 
         posts = Post.objects.all()
 
-        return map(serialize_post, posts)
+        return list(map(serialize_post, posts))
 
     def post(self, request, parameters, *args, **kwargs):
 
         form = CreateForm(data=parameters)
-
         if not form.is_valid():
             raise RequestValidationFailedAPIError(form.errors)
 
